@@ -1,0 +1,8 @@
+# Extra packages for the AIRCHECK notebooks, on top of: pip install -e .[examples]
+matplotlib==3.10.9
+scikit-learn==1.7.2
+tqdm==4.70.1
+ipykernel==7.3.0
+pytorch-lightning==2.6.6
+pyarrow==25.0.1
+rdkit==2026.9.1

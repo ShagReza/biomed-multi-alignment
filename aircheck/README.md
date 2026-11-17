@@ -7,7 +7,9 @@ The goal is the same as for our MMELON work (the `aircheck/` folder of our biome
 evaluate a foundation model for **hit identification**, binary classification of molecules, ranked and scored with
 **hit@K** (how many of the top K predicted molecules are actives), so the two models can be compared on the same data.
 
-Status: setup and planning. The notebooks are not written yet.
+Status: the notebooks are written but **not yet run**. Full fine-tuning needs about 15 GB of memory, which
+the current CPU machine does not have, so nothing here has been tested end to end. Expect to fix small things
+on the first GPU run.
 
 ## MAMMAL in short
 
@@ -42,38 +44,75 @@ We start with **molecule only**, the same setup as MMELON.
 
 The two need **separate Python environments**; see [INSTALL.md](INSTALL.md).
 
-## Folder layout (planned)
+## Folder layout
 
 ```
 aircheck/
 ├── README.md                    # this file
 ├── INSTALL.md                   # environment setup
 ├── requirements-aircheck.txt    # extra packages on top of the repository's own
-├── notebooks/                   # fine-tuning, CV, inference (to come)
+├── notebooks/                   # all notebooks (see the table below)
+├── sample_data/                 # mock multi-target data for the protein + molecule notebooks
+├── tools/                       # make_mock_multitarget.py, which builds that mock data
 └── output/                      # created by the notebooks; not tracked by git
 ```
 
 ## Data
 
-The notebooks will read the same files as the MMELON notebooks (`.csv` or `.parquet`, with a SMILES and a label
+The notebooks read the same files as the MMELON notebooks (`.csv` or `.parquet`, with a SMILES and a label
 column), so both models train and test on identical data. The sample data is the MMELON fork's
 `aircheck/sample_data/` (WDR91 ASMS subset: 10,221 train molecules with 221 actives, 1,031 test with 31 actives).
 
-## Plan
+## Notebooks
 
-Following the MMELON notebooks, as far as it makes sense for MAMMAL:
+All in `notebooks/`. The three ways of using MAMMAL each have a training and an inference notebook, and the
+molecule-only route also has cross-validation and a fold ensemble, matching the MMELON set.
 
-1. **Fine-tuning** on one train/validation split, best epoch chosen by the same metrics as MMELON (hit@K, AUROC).
-2. **Inference** on a test file: `predictions.csv` (every molecule with its score and rank) and metrics.
-3. **Cross-validation** on the same cluster folds as MMELON, with early stopping and class balancing.
-4. **Fold ensemble** inference.
-5. Later, optionally: embeddings + LightGBM, the report, a whole-recipe runner, and the protein + molecule format.
+| Mode | File | What it does |
+|---|---|---|
+| Folds | `cluster_cv_folds.ipynb` | Cluster-held-out CV folds. **Copied unchanged from the MMELON fork**, so both models use the same splits. |
+| 1. Molecule only | `MAMMAL_finetuning.ipynb` | One model on a train file, best epoch picked on a second file |
+| | `MAMMAL_finetuning_cv.ipynb` | Cross-validation on those folds; picks the epoch to train the final model for |
+| | `MAMMAL_inference.ipynb` | Scores a file with one model |
+| | `MAMMAL_inference_cv.ipynb` | Scores a file with the fold models averaged |
+| 2. Embeddings | `MAMMAL_embedding_extraction.ipynb` | One 768-number vector per molecule, from the encoder (pretrained or fine-tuned) |
+| + LightGBM | `MAMMAL_embedding_lgbm_cv.ipynb` | CV LightGBM on those embeddings. **Copied from the MMELON fork.** |
+| | `MAMMAL_embedding_lgbm_inference.ipynb` | Scores test embeddings with the LightGBM models. **Copied from the MMELON fork.** |
+| 3. Protein + molecule | `MAMMAL_multitarget_finetuning.ipynb` | One model across several targets; the prompt holds the protein and the molecule |
+| | `MAMMAL_multitarget_inference.ipynb` | Scores (protein, molecule) pairs, with metrics per target |
 
-Starting points: the earlier notebooks `MAMMAL_finetune.ipynb` and `MAMMAL_inference.ipynb` (from IBM's tutorial),
-which use one fixed epoch, no CV, and hard-coded paths.
+The settings, metrics (hit@K, AUROC, PR AUC) and output layout match the MMELON notebooks, so the results of
+the two models line up side by side.
+
+### LoRA
+
+Every fine-tuning notebook has a `USE_LORA` setting:
+
+- **`False`** (the default) trains all 458M weights. Closest to the MMELON runs, and needs about 15 GB of GPU
+  memory.
+- **`True`** freezes the model and trains small added matrices instead, about 0.2% of the weights. Much less
+  memory and faster, usually with similar results. A higher `LEARNING_RATE` (1e-4 to 3e-4) suits it.
+
+Either way the saved model is a plain MAMMAL model: with LoRA the matrices are merged into the weights before
+saving, so the inference notebooks do not care which was used.
+
+### Mock multi-target data
+
+The protein + molecule notebooks need rows of (protein, molecule, label), which no AIRCHECK screen gives us
+yet. `tools/make_mock_multitarget.py` writes a small stand-in to `sample_data/`:
+
+```bash
+python aircheck/tools/make_mock_multitarget.py
+```
+
+The molecules are real (from the MMELON sample), but the **protein sequences are randomly generated and the
+labels are synthetic**. It exists only to check that the notebooks run; its metrics mean nothing.
 
 ## Notes
 
 - **Speed:** MAMMAL is about 5 times larger than MMELON, so expect slower training and scoring; a GPU is needed
   for real datasets.
 - **GPU:** the environment's PyTorch is built for CUDA 13, which supports T4, L4, A100 and H100 but not V100.
+- **Memory:** full fine-tuning needs roughly 15 GB (weights, gradients and the optimizer's state). LoRA needs
+  about 4 GB. Cross-validation holds one fold at a time, but keeps each fold's training state on disk, so it
+  needs about 5.5 GB of disk per fold while it runs.

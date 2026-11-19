@@ -54,6 +54,7 @@ aircheck/
 ├── INSTALL.md                   # environment setup
 ├── requirements-aircheck.txt    # extra packages on top of the repository's own
 ├── benchmark/                   # benchmark runs: run_all.sh, run.py, methods/ and thin notebooks/
+├── sample_output/               # mock-up of what an experiment produces (made-up numbers)
 ├── sample_data/                 # mock multi-target data for the protein + molecule notebooks
 ├── tools/                       # make_mock_multitarget.py, which builds that mock data
 ├── archive-to-be-deleted/       # the old notebooks; replaced by benchmark/
@@ -73,8 +74,9 @@ aircheck/benchmark/run_all.sh --experiment wdr91-cluster \
     --train <train file> --test <test file> --only finetune_lora,lgbm_pretrained
 ```
 Everything goes to `aircheck/output/<experiment>/`, including `report.md`. See
-[benchmark/README.md](benchmark/README.md) for the methods and options, and
-[benchmark/notebooks/](benchmark/notebooks/) for the same steps one at a time.
+[benchmark/README.md](benchmark/README.md) for the methods and options,
+[benchmark/notebooks/](benchmark/notebooks/) for the same steps one at a time, and
+[sample_output/](sample_output/) for a mock-up of the folder a run produces.
 
 ## The archived notebooks
 

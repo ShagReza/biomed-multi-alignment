@@ -1,0 +1,40 @@
+{
+  "model": "mammal",
+  "method": "finetune",
+  "name": "MAMMAL fine-tuned (LoRA)",
+  "settings": {
+    "use_lora": true,
+    "lora_r": 8,
+    "lora_alpha": 16,
+    "lora_dropout": 0.05,
+    "lora_target_modules": [
+      "q",
+      "v"
+    ],
+    "epochs": 50,
+    "patience": 5,
+    "batch_size": 16,
+    "learning_rate": 0.0001,
+    "weight_decay": 0.01,
+    "warmup_fraction": 0.1,
+    "seed": 42,
+    "balance_classes": true,
+    "select_metrics": [
+      "hit@200",
+      "hit@100",
+      "hit@50",
+      "rocauc"
+    ],
+    "final": true
+  },
+  "report_extras": {
+    "selected epoch": 7,
+    "epochs trained": 13
+  },
+  "hardware": "Tesla T4",
+  "fork_commit": "0000000",
+  "core_version": "0.1.0",
+  "folds": "aircheck/output/wdr91-cluster/folds/train_cluster_cv_folds.npz",
+  "test": "~/Datasets/wdr91/test.parquet",
+  "created": "2026-01-01T00:00:00"
+}

@@ -119,6 +119,7 @@ def save_model(model, path: Path, s: dict, lora_state=None):
 
 def train_cv(data: pd.DataFrame, fold_list: list, s: dict, models_dir: Path, log) -> tuple:
     """Train the folds side by side; returns (selected epoch, epochs trained, per fold-epoch metrics)."""
+    assert s["epochs"] >= 1, "epochs must be at least 1"
     allowed = [f"hit@{k}" for k in HIT_KS] + ["rocauc", "pr_auc", "precision", "recall", "specificity",
                                               "accuracy", "loss"]
     assert set(s["select_metrics"]) <= set(allowed), f"select_metrics must come from {allowed}"

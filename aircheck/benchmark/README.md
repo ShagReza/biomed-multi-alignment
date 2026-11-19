@@ -29,11 +29,12 @@ folds, the models, the predictions and the report in one place.
 ```
 aircheck/output/<experiment>/
 ├── experiment.json      the train/test files and fold settings this experiment was made with
-├── folds/               the fold files (made here the first time, then reused)
-├── <run name>/          predictions.csv, run.json, progress.log, models/
-├── embeddings/          shared by the LightGBM runs of the same model
-├── report.md            every run in this experiment, with report_summary.csv next to it
-└── run_all.log
+├── folds/               the fold files (made here the first time, then reused), shared by every model
+├── mammal/        this model's own folder, so several models can share one experiment
+│   ├── <run name>/      predictions.csv, run.json, progress.log, models/
+│   ├── embeddings/      shared by this model's LightGBM runs of the same encoder
+│   └── run_all.log
+└── report.md            every run in this experiment, with report_summary.csv next to it
 ```
 Use a new name for other conditions, for example `wdr91-cluster` and `wdr91-stratified`. `experiment.json` is
 checked on every run, so one name cannot end up holding results from two different datasets.
@@ -49,7 +50,7 @@ aircheck/benchmark/run_all.sh --experiment wdr91-cluster \
     --train ~/Datasets/wdr91/train.parquet --test ~/Datasets/wdr91/test.parquet
 ```
 That one command makes the folds (if they are not there yet), does the runs below one after another, and ends
-with `aircheck-bench report`, which writes **`aircheck/output/wdr91-cluster/report.md`** and
+with `aircheck-bench report`, which writes **`aircheck/output/wdr91-cluster/mammal/report.md`** and
 `report_summary.csv` next to it. `aircheck/benchmark/run_all.sh --help` lists every option.
 
 | Run | Method |
@@ -70,14 +71,14 @@ with `aircheck-bench report`, which writes **`aircheck/output/wdr91-cluster/repo
   [aircheck-benchmark-pipeline](https://github.com/ShagReza/aircheck-benchmark-pipeline) uses when it runs
   every model of the benchmark into one experiment folder.
 - **Long runs:** `nohup aircheck/benchmark/run_all.sh --experiment wdr91-cluster ... > /dev/null 2>&1 &`,
-  then follow `aircheck/output/wdr91-cluster/run_all.log`.
+  then follow `aircheck/output/wdr91-cluster/mammal/run_all.log`.
 
 ## Run one method
 
 ```bash
 python aircheck/benchmark/run.py --method finetune --lora \
     --folds aircheck/output/wdr91-cluster/folds/train_cluster_cv_folds.npz \
-    --test ~/Datasets/wdr91/test.parquet --out aircheck/output/wdr91-cluster/finetune_lora
+    --test ~/Datasets/wdr91/test.parquet --out aircheck/output/wdr91-cluster/mammal/finetune_lora
 ```
 The training molecules are the folds CSV next to `--folds` (`<name>_cv_data.csv`), so the folds and the rows
 they refer to always match. Follow a run in `<out>/progress.log`.
@@ -101,7 +102,7 @@ Settings (left out = the default in `methods/<method>.py`, the same as the noteb
 | `--no-final` | finetune | final model on (skip it to save time; then only `test_ensemble`) |
 | `--encoder` | embed_lgbm | the pretrained model |
 | `--lgbm-params` | embed_lgbm | `suggested` (or `default`) |
-| `--embeddings-dir` | embed_lgbm | `<out>/../embeddings/<model>/` |
+| `--embeddings-dir` | embed_lgbm | `<out>/../embeddings/<encoder>/` |
 | `--no-balance` | both | classes balanced (label 1 weighted by the class counts) |
 | `--seed` | both | 42 |
 | `--num-workers` | both | all CPUs, up to 24; use 0–2 on a small machine |
@@ -120,7 +121,8 @@ models/           fold_<i>/best_model/ and final/best_model/ (plain MAMMAL model
                   fold_<i>.txt and full.txt for embed_lgbm
 config.json       embed_lgbm only: the model and view its LightGBM models were trained on
 ```
-`embed_lgbm` writes the embeddings one folder up, so every rerun with the same model shares them:
+`embed_lgbm` writes the embeddings one folder up, under this model's name, so every rerun with the
+same model shares them (and two models in one experiment folder never mix):
 ```
 <out>/../embeddings/<pretrained | finetuned-<run name>>/<train | test>/
 ├── config.json                     model, number of molecules, token limits

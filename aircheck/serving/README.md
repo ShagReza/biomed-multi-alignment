@@ -35,14 +35,14 @@ Paths below are benchmark runs, `output/<experiment>/<run name>/` (see
 
 ```python
 from inference_mammal import load_model, predict
-model = load_model("../output/wdr91-cluster/finetune_lora/models/final")        # final model
-model = load_model("../output/wdr91-cluster/finetune_lora/models", models="folds")  # fold ensemble
+model = load_model("../output/wdr91-cluster/mammal/finetune_lora/models/final")        # final model
+model = load_model("../output/wdr91-cluster/mammal/finetune_lora/models", models="folds")  # fold ensemble
 predict(model, ["CCO", "c1ccccc1"])
 
 from inference_embedding_lgbm import load_model, predict
-model = load_model("../output/wdr91-cluster/lgbm_pretrained")                   # pretrained embeddings
-model = load_model("../output/wdr91-cluster/lgbm_finetuned",                    # fine-tuned embeddings
-                   encoder_path="../output/wdr91-cluster/finetune_lora/models/final")
+model = load_model("../output/wdr91-cluster/mammal/lgbm_pretrained")                   # pretrained embeddings
+model = load_model("../output/wdr91-cluster/mammal/lgbm_finetuned",                    # fine-tuned embeddings
+                   encoder_path="../output/wdr91-cluster/mammal/finetune_lora/models/final")
 predict(model, ["CCO", "c1ccccc1"])
 ```
 

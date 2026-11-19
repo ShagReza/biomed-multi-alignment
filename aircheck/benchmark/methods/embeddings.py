@@ -48,15 +48,15 @@ def extract(model, smiles, out_dir: Path, source: str, data_path=None, views=Non
     out_dir = Path(out_dir)
     cleaned, valid = common.valid_smiles(smiles)
     molecules = pd.DataFrame({"row_index": np.where(valid)[0], "smiles": np.array(cleaned, dtype=object)[valid]})
-    config = {"model": source, "data_path": str(data_path) if data_path else None,
+    config = {"encoder": source, "data_path": str(data_path) if data_path else None,
               "n_rows": len(cleaned), "n_valid": len(molecules), "views": [VIEW], "chunk_size": CHUNK_SIZE,
               "max_smiles_tokens": common.MAX_SMILES_TOKENS, "max_prompt_tokens": common.MAX_PROMPT_TOKENS}
     config_path = out_dir / "config.json"
     if config_path.exists():
         previous = json.loads(config_path.read_text())
-        same = {k: previous.get(k) for k in ("model", "n_rows", "n_valid")}
+        same = {k: previous.get(k) for k in ("encoder", "n_rows", "n_valid")}
         assert same == {k: config[k] for k in same}, (
-            f"{out_dir} holds embeddings of other molecules or another model:\n{previous}\nUse another folder.")
+            f"{out_dir} holds embeddings of other molecules or another encoder:\n{previous}\nUse another folder.")
     out_dir.mkdir(parents=True, exist_ok=True)
     config_path.write_text(json.dumps(config, indent=2) + "\n")
     (out_dir / VIEW).mkdir(exist_ok=True)

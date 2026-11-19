@@ -139,8 +139,9 @@ def make_loader(frame, source=None, batch_size=16, shuffle=False, pos_weight=1.0
     """A DataLoader over molecules, ready for MAMMAL."""
     op, _, _, pad = tokenizer(source)
     dataset = MoleculeDataset(frame, op, pad, pos_weight=pos_weight, with_label=with_label)
+    # persistent workers would stay alive for every fold at once during cross-validation
     return DataLoader(dataset, batch_size=batch_size, shuffle=shuffle, collate_fn=make_collate(pad),
-                      num_workers=NUM_WORKERS, persistent_workers=NUM_WORKERS > 0)
+                      num_workers=NUM_WORKERS)
 
 
 def clean_smiles(smiles: list):
@@ -204,7 +205,9 @@ def load_model(path, device=None, models="full") -> LoadedModel:
     device = device or ("cuda" if torch.cuda.is_available() else "cpu")
 
     loaded = [Mammal.from_pretrained(str(f)).to(device).eval() for f in folders]
-    source = str(folders[0]) if (folders[0] / "tokenizer").is_dir() else BASE_MODEL
+    # A saved model keeps its tokenizer in <model>/tokenizer; for a local path fuse reads that
+    # folder as given (it only appends "tokenizer" when downloading from the hub)
+    source = str(folders[0] / "tokenizer") if (folders[0] / "tokenizer").is_dir() else BASE_MODEL
     return LoadedModel(models=loaded, path=path, device=device, source=source)
 
 

@@ -15,14 +15,21 @@ Tested on Google Cloud Vertex AI Workbench (Debian 12, Python 3.10, micromamba).
    ```bash
    pip install -r ~/repos/biomed-multi-alignment/aircheck/requirements-aircheck.txt
    ```
-3. Register it as a Jupyter kernel, then pick **biomed-mammal** as the kernel for the notebooks:
+3. Install [aircheck-benchmark-core](https://github.com/ShagReza/aircheck-benchmark-core), which the benchmark
+   code imports for the folds, the metrics and the report:
+   ```bash
+   git clone git@github.com:ShagReza/aircheck-benchmark-core.git ~/repos/aircheck-benchmark-core
+   pip install -e ~/repos/aircheck-benchmark-core
+   aircheck-bench --version    # check
+   ```
+4. Register it as a Jupyter kernel, then pick **biomed-mammal** as the kernel for the notebooks:
    ```bash
    python -m ipykernel install --user --name biomed-mammal --display-name "biomed-mammal"
    ```
 
 Check:
 ```bash
-python -c "from mammal.model import Mammal; import torch; print('OK', torch.__version__, torch.cuda.is_available())"
+python -c "from mammal.model import Mammal; import aircheck_benchmark_core; import torch; print('OK', torch.__version__, torch.cuda.is_available())"
 ```
 
 The pretrained model (`ibm/biomed.omics.bl.sm.ma-ted-458m`, about 1.8 GB) is downloaded from Hugging Face the first

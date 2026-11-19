@@ -66,6 +66,9 @@ with `aircheck-bench report`, which writes **`aircheck/output/wdr91-cluster/repo
   `run.py` call, e.g. `--num-workers 2` or `--epochs 3` for a quick try. `--only none` just rewrites the report.
 - **Fold method:** `--cv-method cluster` (default), `stratified` or `random`, with `--n-folds`; or `--folds
   <npz>` to use fold files from somewhere else.
+- **Several models at once:** `--no-report` leaves the report to the caller; that is what
+  [aircheck-benchmark-pipeline](https://github.com/ShagReza/aircheck-benchmark-pipeline) uses when it runs
+  every model of the benchmark into one experiment folder.
 - **Long runs:** `nohup aircheck/benchmark/run_all.sh --experiment wdr91-cluster ... > /dev/null 2>&1 &`,
   then follow `aircheck/output/wdr91-cluster/run_all.log`.
 

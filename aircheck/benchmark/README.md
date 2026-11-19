@@ -7,7 +7,7 @@ compared directly with MMELON's and with the models added later.
 
 This folder is plain Python: `run_all.sh` → `run.py` → `methods/`. The notebooks in [notebooks/](notebooks/)
 do the same steps one at a time for exploring, and define no code of their own. The old notebooks in
-[../notebooks/](../notebooks/) are untouched and still work on their own.
+[../archive-to-be-deleted/notebooks/](../archive-to-be-deleted/notebooks/) are untouched and still work on their own.
 
 ## Setup
 
@@ -145,7 +145,7 @@ them last.
   `Cannot use LearningRateMonitor callback with Trainer that has no logger`.
 - **One folder per experiment** instead of `output/<dataset>/<run name>/`.
 - **Multi-target** (`MAMMAL_multitarget_*`) is not a benchmark method here: the benchmark compares models on
-  one target at a time. Those notebooks are untouched in [../notebooks/](../notebooks/).
+  one target at a time. Those notebooks are untouched in [../archive-to-be-deleted/notebooks/](../archive-to-be-deleted/notebooks/).
 
 ## A note on reproducing numbers
 

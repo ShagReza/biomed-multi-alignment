@@ -4,7 +4,7 @@ The same work as `run_all.sh`, one step at a time, for exploring and explaining.
 every cell calls [../methods/](../methods/), [../run.py](../run.py) or aircheck-benchmark-core, so a notebook
 and a benchmark run can never drift apart.
 
-| Notebook | Step | Replaces, in [../../notebooks/](../../notebooks/) |
+| Notebook | Step | Replaces, in [../../archive-to-be-deleted/notebooks/](../../archive-to-be-deleted/notebooks/) |
 |---|---|---|
 | [01_folds.ipynb](01_folds.ipynb) | the experiment's cross-validation folds | `cluster_cv_folds.ipynb` |
 | [02_finetune.ipynb](02_finetune.ipynb) | fine-tune MAMMAL (LoRA or all weights), score the test set | `MAMMAL_finetuning*`, `MAMMAL_inference*` |
@@ -24,4 +24,4 @@ The sample paths point at the single-target sample files in the MMELON fork next
 MAMMAL's own `sample_data/` is multi-target mock data without fingerprints. Point them at your own data.
 
 Nothing here is needed for a benchmark run: `run_all.sh` does the same steps without opening a notebook.
-Multi-target work stays in [../../notebooks/](../../notebooks/); the benchmark compares models on one target.
+Multi-target work stays in [../../archive-to-be-deleted/notebooks/](../../archive-to-be-deleted/notebooks/); the benchmark compares models on one target.

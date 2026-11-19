@@ -1,6 +1,6 @@
 """MAMMAL embeddings, saved as parquet and shared between runs.
 
-The same steps and file layout as ../../notebooks/MAMMAL_embedding_extraction.ipynb: one vector per molecule,
+The same steps and file layout as ../../archive-to-be-deleted/notebooks/MAMMAL_embedding_extraction.ipynb: one vector per molecule,
 the encoder's token vectors averaged over the real tokens, written as parquet parts of `CHUNK_SIZE` molecules:
 
     <dir>/config.json                     model, number of molecules, view

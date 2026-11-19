@@ -1,6 +1,6 @@
 """LightGBM on MAMMAL embeddings.
 
-The same steps as ../../notebooks/MAMMAL_embedding_extraction.ipynb, MAMMAL_embedding_lgbm_cv.ipynb and
+The same steps as ../../archive-to-be-deleted/notebooks/MAMMAL_embedding_extraction.ipynb, MAMMAL_embedding_lgbm_cv.ipynb and
 MAMMAL_embedding_lgbm_inference.ipynb:
 1. Embed the training and test molecules with MAMMAL: the pretrained model by default, or a fine-tuned one
    (`encoder`). The embeddings are saved as parquet next to the runs (see embeddings.py) and reused.

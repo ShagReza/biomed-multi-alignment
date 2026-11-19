@@ -1,4 +1,4 @@
-# AIRCHECK notebooks for MAMMAL
+# AIRCHECK benchmark for MAMMAL
 
 This folder is the AIRCHECK team's addition to IBM's [biomed-multi-alignment](../README.md) (MAMMAL) repository.
 Everything outside `aircheck/` is the original repository, unchanged.
@@ -7,9 +7,11 @@ The goal is the same as for our MMELON work (the `aircheck/` folder of our biome
 evaluate a foundation model for **hit identification**, binary classification of molecules, ranked and scored with
 **hit@K** (how many of the top K predicted molecules are actives), so the two models can be compared on the same data.
 
-Status: the notebooks are written but **not yet run**. Full fine-tuning needs about 15 GB of memory, which
-the current CPU machine does not have, so nothing here has been tested end to end. Expect to fix small things
-on the first GPU run.
+Status: [benchmark/](benchmark/) holds the code that produces the benchmark results. Its LightGBM method and
+LoRA fine-tuning have been checked end to end on a small CPU run; full fine-tuning needs about 15 GB of memory
+and is still untested. Expect to fix small things on the first GPU run.
+
+The earlier notebooks are in [archive-to-be-deleted/](archive-to-be-deleted/) and are no longer used.
 
 ## MAMMAL in short
 
@@ -51,10 +53,11 @@ aircheck/
 ├── README.md                    # this file
 ├── INSTALL.md                   # environment setup
 ├── requirements-aircheck.txt    # extra packages on top of the repository's own
-├── notebooks/                   # all notebooks (see the table below)
+├── benchmark/                   # benchmark runs: run_all.sh, run.py, methods/ and thin notebooks/
 ├── sample_data/                 # mock multi-target data for the protein + molecule notebooks
 ├── tools/                       # make_mock_multitarget.py, which builds that mock data
-└── output/                      # created by the notebooks; not tracked by git
+├── archive-to-be-deleted/       # the old notebooks; replaced by benchmark/
+└── output/                      # experiments and runs; not tracked by git
 ```
 
 ## Data
@@ -63,10 +66,21 @@ The notebooks read the same files as the MMELON notebooks (`.csv` or `.parquet`,
 column), so both models train and test on identical data. The sample data is the MMELON fork's
 `aircheck/sample_data/` (WDR91 ASMS subset: 10,221 train molecules with 221 actives, 1,031 test with 31 actives).
 
-## Notebooks
+## How to run it
 
-All in `notebooks/`. The three ways of using MAMMAL each have a training and an inference notebook, and the
-molecule-only route also has cross-validation and a fold ensemble, matching the MMELON set.
+```bash
+aircheck/benchmark/run_all.sh --experiment wdr91-cluster \
+    --train <train file> --test <test file> --only finetune_lora,lgbm_pretrained
+```
+Everything goes to `aircheck/output/<experiment>/`, including `report.md`. See
+[benchmark/README.md](benchmark/README.md) for the methods and options, and
+[benchmark/notebooks/](benchmark/notebooks/) for the same steps one at a time.
+
+## The archived notebooks
+
+All in `archive-to-be-deleted/notebooks/`, kept only for reference. The three ways of using MAMMAL each have a
+training and an inference notebook, and the molecule-only route also has cross-validation and a fold ensemble,
+matching the MMELON set.
 
 | Mode | File | What it does |
 |---|---|---|

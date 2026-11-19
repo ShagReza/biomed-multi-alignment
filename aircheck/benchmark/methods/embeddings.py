@@ -19,8 +19,10 @@ import numpy as np
 import pandas as pd
 import torch
 
-from . import common
+from . import common  # puts ../../serving on sys.path
 from .common import ENCODER_INPUTS_ATTENTION_MASK, ENCODER_INPUTS_TOKENS
+
+import inference_embedding_lgbm  # noqa: E402  (from ../../serving)
 
 CHUNK_SIZE = 1000   # molecules per part file, as in the extraction notebook
 VIEW = "mammal"     # MAMMAL gives one embedding per molecule
@@ -35,15 +37,9 @@ def _part(out_dir: Path, view: str, chunk: int) -> Path:
     return out_dir / view / f"part-{chunk:05d}.parquet"
 
 
-def embed_batch(model, batch) -> np.ndarray:
-    """One vector per molecule: the encoder's token vectors, averaged over the real tokens."""
-    mask = batch[ENCODER_INPUTS_ATTENTION_MASK]
-    hidden = model.t5_model.encoder(
-        inputs_embeds=model._calculate_inputs_embeddings(batch), attention_mask=mask,
-    )["last_hidden_state"]                        # (batch, tokens, 768)
-    weights = mask.unsqueeze(-1).to(hidden.dtype)  # 0 for padding, 1 for real tokens
-    pooled = (hidden * weights).sum(dim=1) / weights.sum(dim=1).clamp(min=1)
-    return pooled.float().cpu().numpy()
+# The embedding itself lives in ../../serving/inference_embedding_lgbm.py, so the API and the benchmark
+# make the same vectors
+embed_batch = inference_embedding_lgbm.embed_batch
 
 
 def extract(model, smiles, out_dir: Path, source: str, data_path=None, views=None, batch_size=32,

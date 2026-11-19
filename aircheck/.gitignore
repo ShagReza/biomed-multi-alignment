@@ -1,2 +1,5 @@
 # Models, predictions and other outputs (large; recreated by the notebooks)
 output/
+# Local API settings (may hold real paths); serving/.env.example and models.example.json are the templates
+serving/.env
+serving/models.json

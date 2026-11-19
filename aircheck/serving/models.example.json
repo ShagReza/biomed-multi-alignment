@@ -1,0 +1,17 @@
+{
+  "WDR91": {
+    "type": "mammal",
+    "path": "/models/wdr91/finetune_lora/models/final",
+    "models": "full"
+  },
+  "WDR91-folds": {
+    "type": "mammal",
+    "path": "/models/wdr91/finetune_lora/models",
+    "models": "folds"
+  },
+  "WDR91-lgbm": {
+    "type": "embedding_lgbm",
+    "path": "/models/wdr91/lgbm_finetuned",
+    "encoder_path": "/models/wdr91/finetune_lora/models/final"
+  }
+}

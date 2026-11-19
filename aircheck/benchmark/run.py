@@ -67,7 +67,7 @@ def run_one(method: str, folds, test, out, settings=None, name=None, smiles_col=
     out.mkdir(parents=True, exist_ok=True)
     log = common.Log(out / "progress.log")
     if num_workers is not None:
-        common.NUM_WORKERS = num_workers
+        common.set_num_workers(num_workers)
 
     data, fold_list, test_frame = load_data(folds_npz, test, smiles_col, label_col)
     log(f"{method}: {len(data):,} training rows ({int(data['label'].sum()):,} actives), {len(fold_list)} folds; "

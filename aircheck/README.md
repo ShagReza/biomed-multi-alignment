@@ -54,6 +54,7 @@ aircheck/
 ├── INSTALL.md                   # environment setup
 ├── requirements-aircheck.txt    # extra packages on top of the repository's own
 ├── benchmark/                   # benchmark runs: run_all.sh, run.py, methods/ and thin notebooks/
+├── serving/                     # prediction API and its Docker image
 ├── sample_output/               # mock-up of what an experiment produces (made-up numbers)
 ├── sample_data/                 # mock multi-target data for the protein + molecule notebooks
 ├── tools/                       # make_mock_multitarget.py, which builds that mock data
@@ -77,6 +78,9 @@ Everything goes to `aircheck/output/<experiment>/`, including `report.md`. See
 [benchmark/README.md](benchmark/README.md) for the methods and options,
 [benchmark/notebooks/](benchmark/notebooks/) for the same steps one at a time, and
 [sample_output/](sample_output/) for a mock-up of the folder a run produces.
+
+To serve a trained model over HTTP, see [serving/](serving/): the same API and Docker setup as the MMELON
+fork, reusing the scoring code the benchmark uses.
 
 ## The archived notebooks
 

@@ -8,7 +8,7 @@ It is kept for now so the old way can be compared with the new one, and so nothi
 | Here | Replaced by |
 |---|---|
 | `notebooks/` (single-target fine-tuning, inference, embeddings, LightGBM, folds) | [../benchmark/](../benchmark/): `run_all.sh`, `run.py`, `methods/` and 5 thin notebooks |
-| `notebooks/MAMMAL_multitarget_*.ipynb` | nothing: the benchmark compares models on one target at a time, so multi-target work stays here |
+| `notebooks/MAMMAL_multitarget_*.ipynb` | moved to [../multitarget/](../multitarget/), with their mock data: not benchmarked, but kept |
 
 Two things to know if you open them:
 

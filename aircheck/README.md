@@ -56,8 +56,7 @@ aircheck/
 ├── benchmark/                   # benchmark runs: run_all.sh, run.py, methods/ and thin notebooks/
 ├── serving/                     # prediction API and its Docker image
 ├── sample_output/               # mock-up of what an experiment produces (made-up numbers)
-├── sample_data/                 # mock multi-target data for the protein + molecule notebooks
-├── tools/                       # make_mock_multitarget.py, which builds that mock data
+├── multitarget/                 # protein + molecule notebooks, with their mock data (not benchmarked)
 ├── archive-to-be-deleted/       # the old notebooks; replaced by benchmark/
 └── output/                      # experiments and runs; not tracked by git
 ```
@@ -98,8 +97,9 @@ matching the MMELON set.
 | 2. Embeddings | `MAMMAL_embedding_extraction.ipynb` | One 768-number vector per molecule, from the encoder (pretrained or fine-tuned) |
 | + LightGBM | `MAMMAL_embedding_lgbm_cv.ipynb` | CV LightGBM on those embeddings. **Copied from the MMELON fork.** |
 | | `MAMMAL_embedding_lgbm_inference.ipynb` | Scores test embeddings with the LightGBM models. **Copied from the MMELON fork.** |
-| 3. Protein + molecule | `MAMMAL_multitarget_finetuning.ipynb` | One model across several targets; the prompt holds the protein and the molecule |
-| | `MAMMAL_multitarget_inference.ipynb` | Scores (protein, molecule) pairs, with metrics per target |
+
+The protein + molecule notebooks moved to [multitarget/](multitarget/), which keeps them when this folder is
+deleted; they are not part of the benchmark.
 
 The settings, metrics (hit@K, AUROC, PR AUC) and output layout match the MMELON notebooks, so the results of
 the two models line up side by side.
@@ -119,10 +119,10 @@ saving, so the inference notebooks do not care which was used.
 ### Mock multi-target data
 
 The protein + molecule notebooks need rows of (protein, molecule, label), which no AIRCHECK screen gives us
-yet. `tools/make_mock_multitarget.py` writes a small stand-in to `sample_data/`:
+yet. `multitarget/tools/make_mock_multitarget.py` writes a small stand-in to `multitarget/sample_data/`:
 
 ```bash
-python aircheck/tools/make_mock_multitarget.py
+python aircheck/multitarget/tools/make_mock_multitarget.py
 ```
 
 The molecules are real (from the MMELON sample), but the **protein sequences are randomly generated and the

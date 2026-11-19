@@ -23,8 +23,8 @@ import numpy as np
 import pandas as pd
 
 HERE = Path(__file__).resolve().parent
-REPO_ROOT = HERE.parent.parent
-OUT_DIR = REPO_ROOT / "aircheck" / "sample_data"
+REPO_ROOT = HERE.parents[2]                      # aircheck/multitarget/tools -> the repository
+OUT_DIR = HERE.parent / "sample_data"            # aircheck/multitarget/sample_data
 MMELON_SAMPLE = REPO_ROOT.parent / "biomed-multi-view" / "aircheck" / "sample_data"
 
 SEED = 42

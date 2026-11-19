@@ -147,8 +147,9 @@ them last.
   `MAMMAL_finetuning_cv.ipynb` passes `logger=False` and stops with
   `Cannot use LearningRateMonitor callback with Trainer that has no logger`.
 - **One folder per experiment** instead of `output/<dataset>/<run name>/`.
-- **Multi-target** (`MAMMAL_multitarget_*`) is not a benchmark method here: the benchmark compares models on
-  one target at a time. Those notebooks are untouched in [../archive-to-be-deleted/notebooks/](../archive-to-be-deleted/notebooks/).
+- **Multi-target** (protein + molecule) is not a benchmark method here: the benchmark compares models on one
+  target at a time, and MMELON cannot take a protein at all. Those notebooks live in
+  [../multitarget/](../multitarget/).
 
 ## A note on reproducing numbers
 
